@@ -1,6 +1,5 @@
 import streamlit as st
 from PyPDF2 import PdfReader
-from fpdf import FPDF
 import openai
 import os, io
 import base64
