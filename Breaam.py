@@ -1,6 +1,5 @@
 import streamlit as st
 from PyPDF2 import PdfReader
-from fpdf import FPDF
 import openai
 import os, io
 import base64
@@ -9,7 +8,7 @@ import time
 # Assuming your OpenAI API key is set in your environment variables
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-class LEEDComplianceChecker:
+class BREEAMComplianceChecker:
     def __init__(self):
         self.model = "gpt-4-0125-preview" 
 
@@ -33,11 +32,11 @@ class LEEDComplianceChecker:
             return None
 
     def upload_pdf(self):
-        uploaded_file = st.file_uploader("Upload your LEED report PDF", type=["pdf"])
+        uploaded_file = st.file_uploader("Upload your BREEAM report PDF", type=["pdf"])
         if uploaded_file is not None:
             # Display the PDF
             st.success('PDF uploaded successfully!')
-            st.write('Your LEED report PDF:')
+            st.write('Your BREEAM report PDF:')
             base64_pdf = base64.b64encode(uploaded_file.getvalue()).decode('utf-8')
             pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="700" height="800" type="application/pdf">'
             st.markdown(pdf_display, unsafe_allow_html=True)
@@ -52,7 +51,7 @@ class LEEDComplianceChecker:
             response = openai.chat.completions.create(
                 model="gpt-4-0125-preview",
                 messages=[
-                    {"role": "system", "content": "You are an AI trained to help with LEED compliance."},
+                    {"role": "system", "content": "You are an AI trained to help with BREEAM compliance."},
                     {"role": "user", "content": "Help me identify compliance issues with my property in the text provided and provide recommendations in bullet points:" + text}
                 ]
             )
@@ -61,10 +60,9 @@ class LEEDComplianceChecker:
         except Exception as e:
             st.error(f"An error occurred while analyzing the text: {e}")
             return "Unable to analyze compliance."
-        
 
     def run(self):
-        st.title("LEED Compliance Checker")
+        st.title("BREEAM Compliance Checker")
                 
         col1, col2 = st.columns(2)
 
@@ -83,24 +81,51 @@ class LEEDComplianceChecker:
                     st.error("Extracted text is empty. Please check the PDF content.")
             else:
                 st.error("Please upload your property documentation/ report.")
-            
-            
 
         with col2:  # Content for the second column (Checklist and tracker)
-            st.subheader("LEED Compliance Checklist")
+            st.subheader("BREEAM Compliance Checklist")
 
             criteria = [
-                "Site selection criteria", "Public transportation access", "Bike storage and changing room facilities",
-                "Stormwater management", "Heat island effect reduction for roof and non-roof", "Light pollution reduction",
-                "Water-efficient landscaping", "Innovative wastewater technologies", "Water use reduction (fixtures and fittings)",
-                "Outdoor water use reduction", "Indoor water use reduction", "Metering and water performance measurement",
-                "Fundamental and enhanced commissioning of building systems", "Minimum energy performance optimization",
-                "Renewable energy production", "Enhanced refrigerant management", "Building energy metering and performance optimization",
-                "Building life-cycle impact reduction", "Construction and demolition waste management", "Sourcing of raw materials",
-                "Material ingredient reporting and optimization", "Long-term commitment to product sustainability",
-                "Minimum indoor air quality performance", "Environmental tobacco smoke control", "Low-emitting materials",
-                "Indoor lighting quality", "Thermal comfort design and verification", "Acoustic performance"
+                "Project management practices",
+                "Stakeholder participation",
+                "Life cycle cost planning",
+                "Considerate constructors scheme",
+                "Building user guide",
+                "Indoor air quality",
+                "Thermal comfort",
+                "Visual comfort and lighting",
+                "Acoustic performance",
+                "Safe and healthy environment",
+                "Reduction in CO2 emissions",
+                "Energy monitoring",
+                "Sub-metering",
+                "Renewable energy",
+                "Lighting efficiency",
+                "Site selection and transportation access",
+                "Cyclist and pedestrian facilities",
+                "Car sharing provisions",
+                "Public transport accessibility",
+                "Water efficiency and consumption",
+                "Leak detection systems",
+                "Water recycling and reuse",
+                "Responsible sourcing",
+                "Lifecycle impacts",
+                "Material efficiency",
+                "Durability and resilience",
+                "Construction waste management",
+                "Operational waste management",
+                "Waste minimization strategies",
+                "Recycling facilities",
+                "Site ecology protection",
+                "Ecological value enhancement",
+                "Minimizing ecological disruption",
+                "Air and water pollution reduction",
+                "Minimizing pollutant emissions",
+                "Light and noise pollution control",
+                "Innovative strategies and technologies",
+                "Exceptional performance in any category"
             ]
+
             
             if 'progress' not in st.session_state:
                 st.session_state.progress = {criteria_item: "Not Started" for criteria_item in criteria}
@@ -138,5 +163,5 @@ class LEEDComplianceChecker:
                         st.session_state.progress[criteria_item] = "Completed"
     
 if __name__ == "__main__":
-    checker = LEEDComplianceChecker()
+    checker = BREEAMComplianceChecker()
     checker.run()

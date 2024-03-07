@@ -1,6 +1,5 @@
 import streamlit as st
 from PyPDF2 import PdfReader
-from fpdf import FPDF
 import openai
 import os, io
 import base64
@@ -9,7 +8,7 @@ import time
 # Assuming your OpenAI API key is set in your environment variables
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-class LEEDComplianceChecker:
+class GreenGlobesComplianceChecker:
     def __init__(self):
         self.model = "gpt-4-0125-preview" 
 
@@ -33,11 +32,11 @@ class LEEDComplianceChecker:
             return None
 
     def upload_pdf(self):
-        uploaded_file = st.file_uploader("Upload your LEED report PDF", type=["pdf"])
+        uploaded_file = st.file_uploader("Upload your Green Globes report PDF", type=["pdf"])
         if uploaded_file is not None:
             # Display the PDF
             st.success('PDF uploaded successfully!')
-            st.write('Your LEED report PDF:')
+            st.write('Your Green Globes report PDF:')
             base64_pdf = base64.b64encode(uploaded_file.getvalue()).decode('utf-8')
             pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="700" height="800" type="application/pdf">'
             st.markdown(pdf_display, unsafe_allow_html=True)
@@ -52,7 +51,7 @@ class LEEDComplianceChecker:
             response = openai.chat.completions.create(
                 model="gpt-4-0125-preview",
                 messages=[
-                    {"role": "system", "content": "You are an AI trained to help with LEED compliance."},
+                    {"role": "system", "content": "You are an AI trained to help with Green Globes compliance."},
                     {"role": "user", "content": "Help me identify compliance issues with my property in the text provided and provide recommendations in bullet points:" + text}
                 ]
             )
@@ -61,10 +60,9 @@ class LEEDComplianceChecker:
         except Exception as e:
             st.error(f"An error occurred while analyzing the text: {e}")
             return "Unable to analyze compliance."
-        
 
     def run(self):
-        st.title("LEED Compliance Checker")
+        st.title("Green Globes Compliance Checker")
                 
         col1, col2 = st.columns(2)
 
@@ -83,25 +81,33 @@ class LEEDComplianceChecker:
                     st.error("Extracted text is empty. Please check the PDF content.")
             else:
                 st.error("Please upload your property documentation/ report.")
-            
-            
 
         with col2:  # Content for the second column (Checklist and tracker)
-            st.subheader("LEED Compliance Checklist")
+            st.subheader("Green Globes Compliance Checklist")
 
             criteria = [
-                "Site selection criteria", "Public transportation access", "Bike storage and changing room facilities",
-                "Stormwater management", "Heat island effect reduction for roof and non-roof", "Light pollution reduction",
-                "Water-efficient landscaping", "Innovative wastewater technologies", "Water use reduction (fixtures and fittings)",
-                "Outdoor water use reduction", "Indoor water use reduction", "Metering and water performance measurement",
-                "Fundamental and enhanced commissioning of building systems", "Minimum energy performance optimization",
-                "Renewable energy production", "Enhanced refrigerant management", "Building energy metering and performance optimization",
-                "Building life-cycle impact reduction", "Construction and demolition waste management", "Sourcing of raw materials",
-                "Material ingredient reporting and optimization", "Long-term commitment to product sustainability",
-                "Minimum indoor air quality performance", "Environmental tobacco smoke control", "Low-emitting materials",
-                "Indoor lighting quality", "Thermal comfort design and verification", "Acoustic performance"
+                "Project management and environmental coordination",
+                "Site selection and design for minimal environmental impact",
+                "Energy conservation and efficiency",
+                "Water conservation and efficiency",
+                "Resource management, including material selection and waste reduction",
+                "Emissions, effluents, and pollution control",
+                "Indoor environment, focusing on air quality and lighting",
+                "Environmental management and building operations",
+                "Innovation in green design and integration",
+                "Building resilience and adaptation to climate change",
+                "Commissioning, operations, and maintenance for sustainability",
+                "Integration of environmental purchasing policies",
+                "Utilization of renewable energy sources",
+                "Provision of sustainable transportation options",
+                "Enhancement of indoor environmental quality and comfort",
+                "Implementation of sustainable building materials and resources",
+                "Facilitation of occupant health and well-being",
+                "Promotion of biodiversity and ecological value",
+                "Energy performance monitoring and optimization",
+                "Sustainable site development and land use"
             ]
-            
+
             if 'progress' not in st.session_state:
                 st.session_state.progress = {criteria_item: "Not Started" for criteria_item in criteria}
 
@@ -138,5 +144,5 @@ class LEEDComplianceChecker:
                         st.session_state.progress[criteria_item] = "Completed"
     
 if __name__ == "__main__":
-    checker = LEEDComplianceChecker()
+    checker = GreenGlobesComplianceChecker()
     checker.run()
